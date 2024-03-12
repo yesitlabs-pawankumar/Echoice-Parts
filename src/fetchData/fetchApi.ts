@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { BASE_URL } from "../constant/constant";
 
 type PostDataOptions = {
@@ -113,7 +114,8 @@ export const postFetchDataWithAuth = async ({
     if (result.error) {
       throw result.error;
     }
-  } catch (error) {
-    return error;
+  } catch (error: any) {
+    const errorMessage = error?.message || `$error`;
+    toast.error(errorMessage);
   }
 };

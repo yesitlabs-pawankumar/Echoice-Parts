@@ -5683,12 +5683,14 @@ label.textarea-fields-inner-list-label {
   color: #F10027;
   margin: 0;
   padding: 15px;
-  border-bottom: 1px solid #CAD5D3;
+
 }
 
 .logoutWidth {
-
-  width: 144px
+  padding-top: 4px;
+  padding-bottom: 4px;
+  min-width: 170px;
+  cursor: pointer;
 }
 
 /*logout*/

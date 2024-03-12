@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import SubscribeHome from "@/components/SubscribeHome";
 
 export default function Home() {
   return (
@@ -709,26 +710,7 @@ export default function Home() {
       </section>
 
       <section className="subscribe-sec">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-8 text-center heading">
-              <span> Get latest updates from VoolayVoo? </span>
-            </div>
-            <div className="col-lg-6">
-              <form className="d-flex sub-srchbox mt-2">
-                <input
-                  className="suscribe-srch"
-                  type="mail"
-                  placeholder="Enter your Email"
-                />
-                <button className="subscribe-btn" type="submit">
-                  {" "}
-                  Subscribe{" "}
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
+        <SubscribeHome />
       </section>
 
       <section className="testimonials-sec">

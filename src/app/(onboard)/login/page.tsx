@@ -41,7 +41,7 @@ const Login = () => {
           if (lastPath) {
             router.push(`${lastPath}`);
           } else {
-            router.push("/my/profile");
+            router.push("/");
           }
         } else {
           throw response;

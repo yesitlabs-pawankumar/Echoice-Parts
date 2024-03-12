@@ -38,10 +38,10 @@ export default function Subscribe() {
       try {
         const response = await postData({
           data: e,
-          endpoint: "subscribe",
+          endpoint: "user_subscribe_voolayvoo",
         });
 
-        if (response.email) {
+        if (response.user_email) {
           toast.success(`You have Subscribe to our news letter`);
         } else {
           throw response;
@@ -107,7 +107,7 @@ export default function Subscribe() {
               className="suscribe-srch"
               type="mail"
               placeholder="Enter your Email"
-              {...register("subscribe", {
+              {...register("user_email", {
                 required: {
                   value: true,
                   message: "Email is required",
