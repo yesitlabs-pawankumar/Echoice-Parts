@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRef } from "react";
 import Image from "next/image";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -157,5 +157,11 @@ const AccountVerificaton = () => {
     </>
   );
 };
-
-export default AccountVerificaton;
+const AccountVerificatonPage = () => {
+  return (
+    <Suspense>
+      <AccountVerificaton />
+    </Suspense>
+  );
+};
+export default AccountVerificatonPage;

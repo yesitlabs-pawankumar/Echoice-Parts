@@ -9,11 +9,17 @@ import { DateTime } from "luxon";
 import { BASE_URL } from "@/constant/constant";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/UserProvider";
+import { postDataWithAuth, postFetchDataWithAuth } from "@/fetchData/fetchApi";
+import { toast } from "react-toastify";
 
 const ClientComponent = ({ voopon_detail }) => {
   const [open, setOpen] = useState(false);
   const [openCard, setOpenCard] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const [voopansPrice, setVoopansPrice] = useState<number>(
+    voopon_detail?.voopons_price || 0
+  );
+  const [quantity, setQuantity] = useState(1);
+  const { isAuthenticated, userDetails } = useAuth();
   const router = useRouter();
   let pathName = usePathname();
   const searchParams = useSearchParams();
@@ -24,6 +30,41 @@ const ClientComponent = ({ voopon_detail }) => {
       router.push(`/login?lastPath=${tempPathName}`);
     } else {
       setOpenCard(true);
+    }
+  };
+  const handleQuantity = (qty: number) => {
+    setQuantity(qty);
+    setVoopansPrice(qty * voopon_detail?.voopons_price);
+  };
+  console.log("voopon_detail", voopon_detail, userDetails);
+  const callBack = async (tok: any) => {
+    if (tok.id) {
+      const requestData = {
+        user_id: `${userDetails?.user_id}`,
+        email: userDetails?.email,
+        price: `${voopansPrice}`,
+        voopon_id: `${voopon_detail?.id}`,
+        voopon_quantity: `${quantity}`,
+        promoter_id: voopon_detail?.promoter_id,
+        token: tok?.id,
+        event_id: null,
+        event_quantity: null,
+      };
+      try {
+        const response = await postFetchDataWithAuth({
+          data: requestData,
+          endpoint: "user_buy_now",
+          authToken: userDetails.token,
+        });
+        if (response.success) {
+          toast.success(`Payment successful`);
+        } else {
+          throw response;
+        }
+      } catch (error) {
+        console.log("e", error);
+        toast.error(`${error}`);
+      }
     }
   };
   return (
@@ -81,7 +122,7 @@ const ClientComponent = ({ voopon_detail }) => {
             setOpen={setOpen}
             data={voopon_detail?.collaborator_data}
           />
-          <AddCard open={openCard} setOpen={setOpenCard} />
+          <AddCard open={openCard} setOpen={setOpenCard} callBack={callBack} />
 
           <div className="row mt-3">
             <div className="col-lg-8 col-md-8">
@@ -109,14 +150,17 @@ const ClientComponent = ({ voopon_detail }) => {
               <div className="price-box">
                 <h4>
                   {" "}
-                  Price: <span> {voopon_detail?.voopons_price} </span>
+                  Price: <span> {voopansPrice} </span>
                 </h4>
               </div>
             </div>
             <div className="col-lg-4 col-md-6">
               <div className="quantity">
                 <h4> Quantity:</h4>
-                <Quantity updateQuantity={(e) => console.log(e)} />
+                <Quantity
+                  limit={Number(voopon_detail?.buyer_per_voopons || 1)}
+                  updateQuantity={handleQuantity}
+                />
               </div>
             </div>
           </div>

@@ -11,21 +11,30 @@ import Quantity from "@/components/Quantity";
 import Carousel from "@/components/Carousel";
 import { useAuth } from "@/app/UserProvider";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
+import { postData, postFetchDataWithAuth } from "@/fetchData/fetchApi";
 
 const ClientComponent = ({ eventDetail }) => {
   const [open, setOpen] = useState(false);
   const [openCard, setOpenCard] = useState(false);
   const [eventPrice, setEventPrice] = useState<number>(
-    eventDetail?.events_price || 0
+    eventDetail.hasOwnProperty("events_price") &&
+      typeof eventDetail?.events_price === "number"
+      ? Number(eventDetail?.events_price)
+      : 0
   );
+  const [quantity, setQuantity] = useState(1);
   const { isAuthenticated, userDetails } = useAuth();
   const router = useRouter();
   let pathName = usePathname();
   const searchParams = useSearchParams();
   const tempPathName =
     pathName + `?promoter_id=${searchParams.get("promoter_id")}`;
+  let pageUrl = "";
+  if (window) {
+    pageUrl = window.location.href;
+  }
 
-  const pageUrl = window.location.href;
   const pageTitle = document.title;
   const facebookShareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
     pageUrl
@@ -43,9 +52,15 @@ const ClientComponent = ({ eventDetail }) => {
   const whatsappShareLink = `https://wa.me/?text=${encodeURIComponent(
     `${pageTitle} - ${pageUrl}`
   )}`;
-  const handleQuantity = (quantity) => {
-    setEventPrice(quantity * eventDetail?.events_price);
+  const handleQuantity = (qty) => {
+    setQuantity(qty);
+    setEventPrice(
+      qty * eventDetail.hasOwnProperty("events_price")
+        ? Number(eventDetail?.events_price)
+        : 0
+    );
   };
+  console.log("eventDetail", eventDetail);
   const handleBookNow = () => {
     if (!isAuthenticated) {
       router.push(`/login?lastPath=${tempPathName}`);
@@ -53,7 +68,57 @@ const ClientComponent = ({ eventDetail }) => {
       setOpenCard(true);
     }
   };
-
+  const generateQRCode = async () => {
+    try {
+      const requestData = {
+        user_id: userDetails?.user_id,
+        promoter_event_id: eventDetail?.id,
+        // business_event_id: eventDetail,
+        price: eventPrice,
+        event_id: eventDetail?.id,
+        event_quantity: quantity,
+        promoter_id: eventDetail?.promoter_id,
+      };
+      const response = await postData({
+        data: requestData,
+        endpoint: "qrcode_generate_Save_test",
+      });
+      if (response.id) {
+        toast.success(`QR code generated`);
+      }
+    } catch (error) {
+      toast.error(`${error}`);
+    }
+  };
+  const callBack = async (tok: any) => {
+    if (tok.id) {
+      const requestData = {
+        user_id: userDetails?.user_id,
+        email: userDetails?.email,
+        price: eventPrice,
+        event_id: eventDetail?.id,
+        event_quantity: quantity,
+        promoter_id: eventDetail?.promoter_id,
+        token: tok?.id,
+      };
+      try {
+        const response = await postFetchDataWithAuth({
+          data: requestData,
+          endpoint: "user_buy_now",
+          authToken: userDetails.token,
+        });
+        if (response.success) {
+          await generateQRCode();
+          toast.success(`Payment successful`);
+        } else {
+          throw response;
+        }
+      } catch (error) {
+        console.log("e", error);
+        toast.error(`${error}`);
+      }
+    }
+  };
   return (
     <>
       <section className="details-page">
@@ -64,7 +129,7 @@ const ClientComponent = ({ eventDetail }) => {
                 <img
                   className="w-100"
                   src={
-                    eventDetail?.eventsimage[0]?.image_name
+                    eventDetail?.eventsimage?.[0]?.image_name
                       ? `${BASE_URL}/${eventDetail?.eventsimage[0]?.image_name}`
                       : "/images/banners/slide1.png"
                   }
@@ -72,7 +137,7 @@ const ClientComponent = ({ eventDetail }) => {
                   id="product-main-image"
                 />
 
-                <div
+                {/* <div
                   id="pro-slider"
                   className="product-image-slider owl-carousel"
                 >
@@ -106,9 +171,9 @@ const ClientComponent = ({ eventDetail }) => {
                     alt=""
                     className="image-list w-100"
                   />
-                </div>
+                </div> */}
 
-                {/* <Carousel images={eventDetail?.eventsimage} /> */}
+                <Carousel images={eventDetail?.eventsimage} />
               </div>
             </div>
             <div className="col-lg-6">
@@ -217,20 +282,28 @@ const ClientComponent = ({ eventDetail }) => {
                   setOpen={setOpen}
                   data={eventDetail?.collaborator_data}
                 />
-                <AddCard open={openCard} setOpen={setOpenCard} />
+                <AddCard
+                  open={openCard}
+                  setOpen={setOpenCard}
+                  callBack={callBack}
+                />
 
                 <div className="row mt-2 align-items-center">
                   <div className="col-lg-7 col-md-6">
                     <div className="quantity">
                       <h4> Quantity:</h4>
-                      <Quantity updateQuantity={handleQuantity} />
+                      <Quantity limit={1000} updateQuantity={handleQuantity} />
                     </div>
                   </div>
                   <div className="col-lg-5 col-md-6">
                     <div className="price-box">
                       <h4>
                         {" "}
-                        Price: <span> ${eventPrice} </span>
+                        Price:{" "}
+                        <span>
+                          {" "}
+                          $ {eventPrice === 0 ? "Free" : eventPrice}{" "}
+                        </span>
                       </h4>
                     </div>
                   </div>

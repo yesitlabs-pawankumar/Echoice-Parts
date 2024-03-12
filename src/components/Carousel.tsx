@@ -80,7 +80,7 @@ const CustomCarousel: React.FC<CustomCarouselProps> = ({ images }) => {
       {Array.isArray(images) &&
         images.map((image: any, index) => (
           <div key={index} className="slideItem">
-            <Image
+            <img
               src={
                 image.image_name
                   ? `${BASE_URL}${image.image_name}`

@@ -7,15 +7,14 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import AddressAutoComplete from "@/components/AddressAutoComplete";
+import { useAuth } from "@/app/UserProvider";
 
 const Profile = () => {
   const [edit, setEdit] = useState(true);
   const [reload, setReload] = useState(false);
   const [userImage, setuserImage] = useState("");
-  const [localStorage, setLocalStorage] = useLocalStorage<any>(
-    "loginUser",
-    null
-  );
+  const { isAuthenticated, userDetails } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -27,9 +26,9 @@ const Profile = () => {
     async function fetchEffect() {
       try {
         const response = await postFetchDataWithAuth({
-          data: { user_id: localStorage.user_details.user_id },
+          data: { user_id: userDetails.user_id },
           endpoint: "user_get_profile",
-          authToken: localStorage.token,
+          authToken: userDetails.token,
         });
         if (response?.data?.user_signup_status === "1") {
           setValue("email", response.data.email);
@@ -45,14 +44,15 @@ const Profile = () => {
       }
     }
     fetchEffect();
-  }, [reload]);
+    // eslint-disable-next-line
+  }, [isAuthenticated, reload]);
   const onSubmit = async (data: any) => {
     try {
       const formdata = {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        user_id: localStorage.user_details.user_id,
+        user_id: userDetails?.user_id,
         location: data.address,
         latitude: data.latitude,
         longitude: data.longitude,
@@ -63,7 +63,7 @@ const Profile = () => {
       const response = await postFetchDataWithAuth({
         data: formdata,
         endpoint: "user_update_profile",
-        authToken: localStorage.token,
+        authToken: userDetails?.token,
       });
       if (response.success) {
         setReload(!reload);
@@ -166,9 +166,7 @@ const Profile = () => {
                 })}
                 type="text"
                 style={{ border: errors.email ? "1px solid red" : "" }}
-                readOnly={
-                  edit || localStorage.user_details.login_type === "email"
-                }
+                readOnly={edit || userDetails?.login_type === "email"}
                 placeholder="Email"
               />
             </div>
@@ -194,9 +192,7 @@ const Profile = () => {
                 type="text"
                 maxLength={10}
                 style={{ border: errors.phone ? "1px solid red" : "" }}
-                readOnly={
-                  edit || localStorage.user_details.login_type === "phone"
-                }
+                readOnly={edit || userDetails?.login_type === "phone"}
                 placeholder="Phone number"
               />
             </div>

@@ -171,6 +171,7 @@ const ClientComponent: React.FC<ClientComponentProps> = ({
     }
     setPageNo(1);
     setRenderList(tempList);
+    // eslint-disable-next-line
   }, [appliedFilter, locationFilter]);
 
   const handleCategorySelect = (category) => {
@@ -420,7 +421,10 @@ const ClientComponent: React.FC<ClientComponentProps> = ({
                           />
                           <div className="event-price-free">
                             {" "}
-                            ${item.events_price}{" "}
+                            $
+                            {Number(item.events_price) === 0
+                              ? "Free"
+                              : Number(item.events_price)}{" "}
                           </div>
                         </div>
                         <div className="event-pad">

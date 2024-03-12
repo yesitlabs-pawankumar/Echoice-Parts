@@ -6,7 +6,7 @@ import { countCategory, filterEvent } from "@/relatedFunction/eventFunction";
 async function getData() {
   const resCategory = await fetch(`${BASE_URL}/api/user_category_list`, {
     method: "POST",
-    body: "none",
+    // body: "none",
   });
 
   const resEventList = await fetch(`${BASE_URL}/api/user_event_list`, {

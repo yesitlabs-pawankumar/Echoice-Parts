@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 import { useForm } from "react-hook-form";
 
 import Dialog from "./components/success";
@@ -275,4 +275,11 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+const ResetPasswordPage = () => {
+  return (
+    <Suspense>
+      <ResetPassword />
+    </Suspense>
+  );
+};
+export default ResetPasswordPage;

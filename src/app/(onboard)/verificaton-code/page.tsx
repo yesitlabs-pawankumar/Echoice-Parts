@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -156,5 +156,11 @@ const VerificationCode = () => {
     </>
   );
 };
-
-export default VerificationCode;
+const VerificationCodePage = () => {
+  return (
+    <Suspense>
+      <VerificationCode />
+    </Suspense>
+  );
+};
+export default VerificationCodePage;

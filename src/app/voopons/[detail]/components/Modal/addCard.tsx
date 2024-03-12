@@ -5,25 +5,32 @@ import { STRIPE_PUB_KEY } from "@/constant/constant";
 import CheckoutForm from "./checkoutForm";
 const stripePromise = loadStripe(STRIPE_PUB_KEY!);
 
-const AddCard = ({ open, setOpen }: { open: boolean; setOpen: Function }) => {
-  const options = {
-    // clientSecret,
-    mode: "payment",
-    amount: 1099,
-    currency: "usd",
-    // Fully customizable with appearance API.
-    appearance: {
-      theme: "stripe",
-    },
-  };
+const AddCard = ({
+  open,
+  setOpen,
+  callBack,
+}: {
+  open: boolean;
+  setOpen: Function;
+  callBack: Function;
+}) => {
+  // const options = {
+  //   // mode: "payment",
+  //   amount: amount,
+  //   currency: "usd",
+
+  //   appearance: {
+  //     theme: "stripe",
+  //   },
+  // };
 
   return (
     <>
       <Modal open={open}>
         <Box>
           {/* {clientSecret && ( */}
-          <Elements stripe={stripePromise} options={options}>
-            <CheckoutForm setOpen={setOpen} />
+          <Elements stripe={stripePromise}>
+            <CheckoutForm setOpen={setOpen} callBack={callBack} />
           </Elements>
           {/* )} */}
         </Box>

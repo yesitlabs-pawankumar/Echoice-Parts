@@ -15,6 +15,9 @@ interface AuthContextProps {
     name: string;
     profile_image: string;
     token: string;
+    email: string;
+    promoter_id: number;
+    login_type: string;
   };
 }
 
@@ -46,6 +49,7 @@ export default function UserProvider({
       }
     }
     fetch();
+    // eslint-disable-next-line
   }, []);
   const login = (data: any) => {
     setIsAuthenticated(true);

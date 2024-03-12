@@ -4,7 +4,7 @@ import ClientComponent from "./ClientComponent";
 import { BASE_URL } from "@/constant/constant";
 import { getFormData } from "@/fetchData/fetchApi";
 
-async function getData(detail, promoter_id) {
+async function getData(detail: number, promoter_id: number) {
   console.log(detail);
   const resEvent = await fetch(`${BASE_URL}/api/user_event_detail_list`, {
     method: "POST",

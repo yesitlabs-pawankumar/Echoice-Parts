@@ -4,47 +4,29 @@ import {
   PaymentElement,
   CardElement,
   ExpressCheckoutElement,
+  CardNumberElement,
+  CardCvcElement,
+  CardExpiryElement,
 } from "@stripe/react-stripe-js";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-const customCardStyle = {
-  base: {
-    borderRadius: "55px",
-    border: "1px solid #E60023",
-    marginBottom: "20px",
-    padding: "13px 20px 15px 65px",
-    fontWeight: 500,
-    // fontSize: "16px",
-    // color: "#32325d",
-    // fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-    // fontSmoothing: "antialiased",
-    // "::placeholder": {
-    //   color: "#aab7c4",
-    // },
-  },
-  invalid: {
-    color: "#fa755a",
-    iconColor: "#fa755a",
-  },
-};
-const CheckoutForm = ({ setOpen }) => {
+
+const CheckoutForm = ({ setOpen, callBack }) => {
   const stripe = useStripe();
   const elements = useElements();
-
+  const [cardHolderName, setCardHolderName] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!stripe || !elements) {
       // Stripe.js hasn't yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
-
     elements.submit();
-    let cardElement = await elements.getElement(CardElement);
-
-    console.log("cardElement", cardElement);
-    const result = await stripe.createToken(cardElement!);
+    const cardNumberElement = elements?.getElement(CardNumberElement);
+    const result = await stripe.createToken(cardNumberElement!, {
+      name: cardHolderName,
+    });
 
     // This point will only be reached if there is an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
@@ -54,7 +36,8 @@ const CheckoutForm = ({ setOpen }) => {
     if (result?.error) {
       console.log("ress", result?.error);
     } else {
-      console.log("id", result.token);
+      setOpen(false);
+      callBack(result.token);
     }
   };
 
@@ -90,48 +73,29 @@ const CheckoutForm = ({ setOpen }) => {
                     id="cardholderName"
                     className="form-control"
                     placeholder="Card Holder Name"
+                    value={cardHolderName}
+                    onChange={(e) => setCardHolderName(e.currentTarget.value)}
                   />
                 </div>
                 <div className="form-group">
                   <label>Card Number</label>
-                  <CardElement
-                    options={{
-                      hidePostalCode: true,
-                      style: customCardStyle,
-                      // classes: "form-control card-img",
-                    }}
-                  />
-                  <input
-                    // type="email"
-                    id="cardNumber"
-                    maxLength={16}
-                    minLength={16}
-                    className="form-control card-img"
-                    placeholder="****    ****    ****    ****"
-                  />
+
+                  <div className="form-control card-img cardElement">
+                    <CardNumberElement />
+                  </div>
                 </div>
                 <div className="grid-add-card">
-                  <div className="exp-date">
+                  <div className="exp-date half-Width">
                     <label>Expiry Date</label>
-                    <input
-                      type="text"
-                      id="cardExpiry"
-                      name="exp-date"
-                      className="form-control"
-                      placeholder="Month / Year"
-                    />
+                    <div className="form-control cardElement">
+                      <CardExpiryElement />
+                    </div>
                   </div>
-                  <div className="exp-pass">
+                  <div className="exp-pass half-Width">
                     <label>CVV</label>
-                    <input
-                      id="cardCvv"
-                      type="password"
-                      name="cvc"
-                      minLength={3}
-                      maxLength={3}
-                      className="form-control"
-                      placeholder="***"
-                    />
+                    <div className="form-control cardElement">
+                      <CardCvcElement />
+                    </div>
                   </div>
                 </div>
 

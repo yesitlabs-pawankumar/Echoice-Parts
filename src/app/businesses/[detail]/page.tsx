@@ -21,32 +21,32 @@ const Detail = () => {
                   id="pro-slider"
                   className="product-image-slider owl-carousel"
                 >
-                  <Image
+                  <img
                     src="../images/banners/slide1.png"
                     alt=""
                     className="image-list image-list-bdr w-100"
                   />
-                  <Image
+                  <img
                     src="../images/banners/slide2.png"
                     alt=""
                     className="image-list w-100"
                   />
-                  <Image
+                  <img
                     src="../images/banners/slide3.png"
                     alt=""
                     className="image-list w-100"
                   />
-                  <Image
+                  <img
                     src="../images/banners/slide1.png"
                     alt=""
                     className="image-list w-100"
                   />
-                  <Image
+                  <img
                     src="../images/banners/slide2.png"
                     alt=""
                     className="image-list w-100"
                   />
-                  <Image
+                  <img
                     src="../images/banners/slide3.png"
                     alt=""
                     className="image-list w-100"

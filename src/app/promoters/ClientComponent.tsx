@@ -113,6 +113,7 @@ const ClientComponent: React.FC<ClientComponentProps> = ({
         toast.error(`${error}`);
       }
     }
+    // eslint-disable-next-line
   }, [isAuthenticated, reload]);
   useEffect(() => {
     let tempList: any = mainList;
@@ -180,6 +181,7 @@ const ClientComponent: React.FC<ClientComponentProps> = ({
     }
     setPageNo(1);
     setRenderList(tempList);
+    // eslint-disable-next-line
   }, [appliedFilter, locationFilter]);
 
   const handlePageNumber = (pageNo: number) => {

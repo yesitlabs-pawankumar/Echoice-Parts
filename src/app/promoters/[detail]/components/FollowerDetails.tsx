@@ -39,6 +39,7 @@ export default function FollowerDetails({ promoter_id }) {
       }
     }
     fetchData();
+    // eslint-disable-next-line
   }, [userDetails?.user_id, reload]);
 
   const handleUnfollow = async () => {

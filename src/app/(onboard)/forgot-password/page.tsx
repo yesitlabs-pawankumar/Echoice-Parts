@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -8,7 +8,7 @@ import { postDataWithoutAuth } from "@/fetchData/fetchApi";
 import { emailOrPhonePattern } from "@/constant/validation";
 import useLocalStorage from "@/constant/useLocalStorage";
 
-const ForgotPassword = () => {
+const ForgetComponent = () => {
   const router = useRouter();
   const [localStorage, setLocalStorage] = useLocalStorage<any>(
     "forgetUser",
@@ -129,6 +129,14 @@ const ForgotPassword = () => {
         </div>
       </section>
     </>
+  );
+};
+
+const ForgotPassword = () => {
+  return (
+    <Suspense>
+      <ForgetComponent />
+    </Suspense>
   );
 };
 

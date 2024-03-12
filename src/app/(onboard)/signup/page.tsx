@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -190,5 +190,11 @@ const SignUp = () => {
     </>
   );
 };
-
-export default SignUp;
+const SignUpPage = () => {
+  return (
+    <Suspense>
+      <SignUp />
+    </Suspense>
+  );
+};
+export default SignUpPage;

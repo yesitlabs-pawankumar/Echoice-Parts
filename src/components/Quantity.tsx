@@ -2,17 +2,23 @@
 import React, { useEffect, useState } from "react";
 interface QuantityProps {
   updateQuantity: (count: number) => void;
+  limit: number;
 }
-const Quantity: React.FC<QuantityProps> = ({ updateQuantity }) => {
+const Quantity: React.FC<QuantityProps> = ({
+  updateQuantity,
+  limit = 1000,
+}) => {
   const [count, setCount] = useState<number>(1);
+
   const handleSubtract = () => {
     setCount((pre) => (pre > 2 ? pre - 1 : 1));
   };
   const handleAdd = () => {
-    setCount((pre) => (pre >= 1 ? pre + 1 : 1));
+    setCount((pre) => (pre >= 1 && pre < limit ? pre + 1 : pre));
   };
   useEffect(() => {
     updateQuantity(count);
+    // eslint-disable-next-line
   }, [count]);
   return (
     <div id="plus_minus">
@@ -24,8 +30,8 @@ const Quantity: React.FC<QuantityProps> = ({ updateQuantity }) => {
           type="text"
           className="count"
           name="qty"
-          defaultValue="1"
           value={count}
+          readOnly
         />
         <span className="plus bg-dark" onClick={handleAdd}>
           +

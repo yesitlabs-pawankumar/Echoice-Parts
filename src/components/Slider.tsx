@@ -18,6 +18,7 @@ const Slider: React.FC<SliderProps> = ({
     // You can add any logic here that needs to run when the values change
     // For example, updating other components or making API calls
     handleSliderValues({ fromValue, toValue });
+    // eslint-disable-next-line
   }, [fromValue, toValue]);
 
   const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {

@@ -174,6 +174,7 @@ const ClientComponent: React.FC<ClientComponentProps> = ({
     }
     setPageNo(1);
     setRenderList(tempList);
+    // eslint-disable-next-line
   }, [appliedFilter, locationFilter]);
 
   const handleCategorySelect = (category) => {

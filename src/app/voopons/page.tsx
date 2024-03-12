@@ -14,8 +14,8 @@ async function getData() {
   const resultEvent = await resVoopanList.json();
   const templist = resultEvent.data.map((item) => ({
     ...item,
-    category_id: item.event_data.category_id,
-    subcategory_id: item.event_data.subcategory_id,
+    category_id: item?.event_data?.category_id,
+    subcategory_id: item?.event_data?.subcategory_id,
   }));
   if (!resCategory.ok) {
     throw new Error("Failed to fetch data");
