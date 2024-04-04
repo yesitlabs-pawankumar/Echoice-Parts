@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { Modal, Box } from "@mui/material";
 import { BASE_URL } from "@/constant/constant";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const Collaborator = ({
   open,
@@ -11,6 +13,14 @@ const Collaborator = ({
   setOpen: Function;
   data: any;
 }) => {
+  const router = useRouter();
+  const goToCollaborator = (id) => {
+    if (id) {
+      router.push(`/promoters/${id}`);
+    } else {
+      toast.error("Promoter id is not valid");
+    }
+  };
   return (
     <>
       <Modal open={open}>
@@ -39,8 +49,12 @@ const Collaborator = ({
                 <div className="modal-body">
                   <div className="collaborat-pop-box">
                     {Array.isArray(data) &&
-                      data?.map((item) => (
-                        <div className="collab-iner-box" key={item.id}>
+                      data?.map((item: any) => (
+                        <div
+                          className="collab-iner-box"
+                          key={item.id}
+                          onClick={() => goToCollaborator(item?.promoter_id)}
+                        >
                           <div className="colb-img">
                             <Image
                               width={78}

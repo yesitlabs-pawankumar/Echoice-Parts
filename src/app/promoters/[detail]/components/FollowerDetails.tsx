@@ -58,8 +58,14 @@ export default function FollowerDetails({ promoter_id }) {
       if (response.success) {
         setReload(!reload);
       }
-    } catch (error) {
-      toast.error(`${error}`);
+    } catch (error: any) {
+      const errorMessage =
+        typeof error === "string"
+          ? `${error}`
+          : error?.message
+          ? error?.message
+          : `${error}`;
+      toast.error(errorMessage);
     }
   };
   const handlefollow = async () => {
@@ -81,8 +87,14 @@ export default function FollowerDetails({ promoter_id }) {
         if (response.success) {
           setReload(!reload);
         }
-      } catch (error) {
-        toast.error(`${error}`);
+      } catch (error: any) {
+        const errorMessage =
+          typeof error === "string"
+            ? `${error}`
+            : error?.message
+            ? error?.message
+            : `${error}`;
+        toast.error(errorMessage);
       }
     }
   };

@@ -7,6 +7,7 @@ import "@/styles/custom.css";
 import "@/styles/style.css";
 import "@/styles/responsive.css";
 import "@/styles/fonts/stylesheet.css";
+import "@fortawesome/fontawesome-free/css/all.css";
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";

@@ -112,7 +112,7 @@ const Promoters = async () => {
       <div
         className="inner-banner"
         style={{
-          backgroundImage: "url(./images/bg-promo.jpg)",
+          backgroundImage: "url(/images/bg-promo.jpg)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
         }}

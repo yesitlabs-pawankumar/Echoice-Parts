@@ -62,6 +62,7 @@ const Detail = async ({
                   width={596}
                   height={355}
                   className="w-100"
+                  style={{ objectFit: "cover" }}
                   src={
                     promoter_detail?.profile_image
                       ? `${BASE_URL}/${promoter_detail?.profile_image}`

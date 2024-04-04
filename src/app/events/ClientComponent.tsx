@@ -284,13 +284,13 @@ const ClientComponent: React.FC<ClientComponentProps> = ({
       );
     }
   };
-
+  console.log("renderList", renderList);
   return (
     <>
       <div
         className="inner-banner"
         style={{
-          backgroundImage: "url(./images/about-bnr.png)",
+          backgroundImage: "url(/images/about-bnr.png)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
         }}

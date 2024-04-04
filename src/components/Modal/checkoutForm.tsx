@@ -1,15 +1,13 @@
 import {
   useStripe,
   useElements,
-  PaymentElement,
-  CardElement,
-  ExpressCheckoutElement,
   CardNumberElement,
   CardCvcElement,
   CardExpiryElement,
 } from "@stripe/react-stripe-js";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 const CheckoutForm = ({ setOpen, callBack }) => {
   const stripe = useStripe();
@@ -28,13 +26,8 @@ const CheckoutForm = ({ setOpen, callBack }) => {
       name: cardHolderName,
     });
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
     if (result?.error) {
-      console.log("ress", result?.error);
+      toast.error(`${result?.error}`);
     } else {
       setOpen(false);
       callBack(result.token);

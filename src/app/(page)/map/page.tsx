@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 const Map = () => {
@@ -9,11 +8,11 @@ const Map = () => {
           <div className="map-inner-over">
             <div className="map-inner-tooltip">
               <span>
-                <Image src="./images/map/loc-icon.svg" alt="" />
+                <img src="./images/map/loc-icon.svg" alt="" />
                 0.8 miles away
               </span>
               <div className="map-inner-tooltip-in">
-                <Image src="./images/map/brand-logo.svg" alt="" />
+                <img src="./images/map/brand-logo.svg" alt="" />
                 <h1>Lobster Dogs Food Truck</h1>
                 <a href="business-details.html">
                   View Details <i className="far fa-chevron-right"></i>
@@ -21,7 +20,7 @@ const Map = () => {
               </div>
             </div>
             <div className="map-inner-mark">
-              <Image src="./images/map/loc-mark.png" alt="" />
+              <img src="./images/map/loc-mark.png" alt="" />
             </div>
           </div>
 
@@ -155,7 +154,7 @@ const Map = () => {
             </div>
           </div>
           <div className="map-inner-image">
-            <Image src="images/map/map-bg.jpg" alt="" />
+            <img src="images/map/map-bg.jpg" alt="" />
           </div>
         </div>
       </section>

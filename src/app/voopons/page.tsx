@@ -17,6 +17,7 @@ async function getData() {
     category_id: item?.event_data?.category_id,
     subcategory_id: item?.event_data?.subcategory_id,
   }));
+
   if (!resCategory.ok) {
     throw new Error("Failed to fetch data");
   }
@@ -35,7 +36,7 @@ const Voopons = async () => {
       <div
         className="inner-banner"
         style={{
-          backgroundImage: "url(./images/about-bnr.png)",
+          backgroundImage: "url(/images/about-bnr.png)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
         }}

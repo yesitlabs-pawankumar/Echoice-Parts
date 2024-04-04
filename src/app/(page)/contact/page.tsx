@@ -68,7 +68,7 @@ const Contact = () => {
       <div
         className="inner-banner"
         style={{
-          backgroundImage: "url(./images/contact-bg.jpg)",
+          backgroundImage: "url(/images/contact-bg.jpg)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
         }}

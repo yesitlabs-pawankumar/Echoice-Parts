@@ -1023,6 +1023,7 @@ button.btn.btn-bnr:hover {
 .location-box>h4,
 .valid-thru>h4,
 .quantity>h4,
+.quantityStatic>h4,
 .price-box>h4 {
   font-family: 'Montserrat', sans-serif;
   color: #303030;
@@ -1033,12 +1034,17 @@ button.btn.btn-bnr:hover {
 .location-box,
 .valid-thru,
 .quantity,
+.quantityStatic,
 .price-box {
   padding-left: 40px;
   position: relative;
 }
 
 .price-box>h4>span {
+  color: #e60023;
+}
+
+.quantityStatic>h4>span {
   color: #e60023;
 }
 
@@ -1068,7 +1074,8 @@ button.btn.btn-bnr:hover {
   width: 4%;
 }
 
-.quantity {
+.quantity,
+.quantityStatic {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1127,6 +1134,17 @@ button.btn.btn-bnr:hover {
   height: 35px;
   position: absolute;
   top: 7px;
+  left: 0;
+  background-repeat: no-repeat;
+}
+
+.quantityStatic:before {
+  content: "";
+  background: url(/images/quantity.png);
+  width: 35px;
+  height: 35px;
+  position: absolute;
+  top: -3px;
   left: 0;
   background-repeat: no-repeat;
 }
@@ -1391,6 +1409,7 @@ section.added-voopons .owl-nav.disabled,
 .wecome-drop>.dropdown-menu.show {
   border-radius: 4px;
   width: 100%;
+  min-width: 180px;
 }
 
 .login-sign-left {
@@ -1804,6 +1823,8 @@ a.followers-btn {
   color: #263238;
   font-size: 16px;
   font-weight: 600;
+  display: flex;
+  align-items: center;
 }
 
 .details-text-box-business>p {
@@ -2095,6 +2116,10 @@ li.page-item.active>a {
 
 .card-width {
   width: 450px;
+}
+
+.share-width {
+  width: 500px;
 }
 
 .add-card-hd {
@@ -3659,7 +3684,8 @@ label.user-upload-icon {
 }
 
 .user-refer-btn a img {
-  width: 15px;
+  width: 24px;
+  height: 24px;
 }
 
 /* REFER-A-FRIEND */
@@ -5631,28 +5657,27 @@ label.textarea-fields-inner-list-label {
   background-color: transparent;
   border: none;
   color: #B51B09;
-  font-size: 32px;
+  font-size: 24px;
   cursor: pointer;
   padding: 10px;
-
 }
 
 
 .leftArrow {
   position: absolute;
   color: #B51B09;
-  font-size: 32px;
+  font-size: 24px;
   left: 0px;
-  top: 50%;
+  top: 45%;
   transform: translateY(-50%);
 }
 
 .rightArrow {
   position: absolute;
   color: #B51B09;
-  font-size: 32px;
+  font-size: 24px;
   right: 0px;
-  top: 50%;
+  top: 45%;
   transform: translateY(-50%);
 }
 
@@ -5670,7 +5695,33 @@ label.textarea-fields-inner-list-label {
 }
 
 .carousel-container {
-  margin: 20px;
+  position: relative;
+}
+
+.carousel-item {
+  padding: 0 10px;
+}
+
+.navigation {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.navigation button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.navigation button.prev {
+  position: absolute;
+  left: 0;
+}
+
+.navigation button.next {
+  position: absolute;
+  right: 0;
 }
 
 /* carousel */
@@ -5703,7 +5754,7 @@ label.textarea-fields-inner-list-label {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex-grow: 1;
+  /* flex-grow: 1; */
 }
 
 /* paragraph after 4 lines in cards*/
@@ -5886,3 +5937,118 @@ label.textarea-fields-inner-list-label {
 }
 
 /* no data present style*/
+
+
+/* NEW-CARD-ADD */
+
+.business-add-payment-card-add-btn {
+  width: 70%;
+  height: auto;
+  text-align: right;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.business-add-payment-card-add-btn a {
+  color: #000;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: flex-end;
+}
+
+.business-add-payment-card-add-btn a i {
+  color: #e60023;
+  font-size: 17px;
+}
+
+.select-card {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  background: #fff;
+  left: 12px;
+  top: 12px;
+  z-index: 9;
+  border-radius: 50%;
+  outline: 1px solid #fff;
+  outline-offset: 3px;
+  display: none;
+}
+
+.business-add-payment-card-box.active .select-card {
+  display: block;
+}
+
+/* NEW-CARD-ADD */
+
+/* model close */
+.cross-container {
+  position: relative;
+  width: 100%;
+}
+
+.cross-icon {
+  position: absolute;
+  background: red;
+  color: white;
+  top: -10px;
+  right: -10px;
+}
+
+#payemntCard .card-width {
+  width: 900px;
+  height: 50vh;
+  max-height: 80vh;
+  max-width: 100%;
+}
+
+/* model close */
+
+
+/* share referal code */
+
+
+.share-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.share-wrapper {
+  position: relative;
+}
+
+.share-wrapper.selected {
+  border: 2px solid gray;
+  border-radius: 8px;
+}
+
+.share-refer-btn {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: 8px;
+  margin-top: 25px;
+}
+
+.share-refer-btn a {
+  display: flex;
+  background: #E60023;
+  color: #FFF;
+  font-size: 18px;
+  font-weight: 500;
+  text-transform: uppercase;
+  gap: 12px;
+  justify-content: center;
+  padding: 10px 70px;
+  border-radius: 30px;
+  align-items: center;
+}

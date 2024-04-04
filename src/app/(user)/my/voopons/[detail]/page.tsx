@@ -1,40 +1,104 @@
-"use server";
-import Image from "next/image";
-import Events from "./components/events";
+"use client";
+
+import { useAuth } from "@/app/UserProvider";
 import ClientComponent from "./ClientComponent";
+import { postData, postFetchDataWithAuth } from "@/fetchData/fetchApi";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import Image from "next/image";
 import { BASE_URL } from "@/constant/constant";
-import { getFormData } from "@/fetchData/fetchApi";
+import Events from "@/app/voopons/[detail]/components/events";
 
-async function getData(detail, promoter_id) {
-  const resVoopon = await fetch(`${BASE_URL}/api/user_voopon_detail_list`, {
-    method: "POST",
-    body: getFormData({ voopon_id: detail, promoter_id }),
-  });
-  const vooponDetails = await resVoopon.json();
-  const resRelatedEvent = await fetch(
-    `${BASE_URL}/api/user_event_list_related_voopon`,
-    {
-      method: "POST",
-      body: getFormData({ voopon_id: detail, promoter_id }),
-    }
-  );
-  const relatedEvent = await resRelatedEvent.json();
-
-  return {
-    voopon_detail: vooponDetails.data,
-    related_event: relatedEvent?.data?.[0]?.event_related_list,
-  };
-}
-
-const Detail = async ({
+const VooponDetail = ({
   params: { detail },
   searchParams: { promoter_id },
 }: {
   params: { detail: number };
   searchParams: { promoter_id: number };
 }) => {
-  const { voopon_detail, related_event } = await getData(detail, promoter_id);
+  const [vooponDetail, setVooponDetail] = useState<any>({});
+  const [relatedEvent, setRelatedEvent] = useState<any>({});
+  const [qrCode, setQrCode] = useState<any>({});
+  const { isAuthenticated, userDetails } = useAuth();
+  useEffect(() => {
+    if (promoter_id && detail && isAuthenticated) {
+      fetchEventDetail();
+      fetchRelatedEvent();
+    }
+  }, [detail, promoter_id, isAuthenticated]);
+  const generateQRCode = async (matchNumber: string) => {
+    try {
+      const response = await postFetchDataWithAuth({
+        data: { user_id: userDetails?.user_id, match_number: matchNumber },
+        endpoint: "user_qr_code_get",
+        authToken: userDetails?.token,
+      });
 
+      if (response?.success) {
+        setQrCode(response?.data?.[0]);
+      }
+    } catch (error) {
+      toast.error(`${error}`);
+    }
+  };
+  const fetchRelatedEvent = async () => {
+    try {
+      const resVoopon = await postData({
+        data: { voopon_id: detail, promoter_id },
+        endpoint: "user_event_list_related_voopon",
+      });
+
+      if (resVoopon?.[0]?.id) {
+        setRelatedEvent(resVoopon?.[0]?.event_related_list);
+      } else {
+        throw resVoopon;
+      }
+    } catch (error: any) {
+      const errorMessage =
+        typeof error === "string"
+          ? `${error}`
+          : error?.message
+          ? error?.message
+          : `${error}`;
+      toast.error(errorMessage);
+    }
+  };
+  const fetchEventDetail = async () => {
+    try {
+      const resultEvent = await postFetchDataWithAuth({
+        data: { user_id: userDetails?.user_id },
+        endpoint: "user_my_voopon_list",
+        authToken: userDetails?.token,
+      });
+
+      if (Array.isArray(resultEvent?.data)) {
+        const templist = resultEvent.data.find(
+          (item: any) => Number(item?.promoter_voopon_id) === Number(detail)
+        );
+        const resVoopon = await postData({
+          data: { voopon_id: detail, promoter_id },
+          endpoint: "user_voopon_detail_list",
+        });
+        if (resVoopon?.id) {
+          setVooponDetail({
+            ...resVoopon,
+            voopon_quantity: templist?.voopon_quantity,
+          });
+        }
+        generateQRCode(templist?.match_number);
+      } else {
+        throw resultEvent;
+      }
+    } catch (error: any) {
+      const errorMessage =
+        typeof error === "string"
+          ? `${error}`
+          : error?.message
+          ? error?.message
+          : `${error}`;
+      toast.error(errorMessage);
+    }
+  };
   return (
     <>
       <section className="details-page">
@@ -46,8 +110,8 @@ const Detail = async ({
                   width={596}
                   height={375}
                   src={
-                    voopon_detail?.vooponsimage?.[0]?.image_name
-                      ? `${BASE_URL}/${voopon_detail?.vooponsimage?.[0]?.image_name}`
+                    vooponDetail?.vooponsimage?.[0]?.image_name
+                      ? `${BASE_URL}/${vooponDetail?.vooponsimage?.[0]?.image_name}`
                       : "/images/amf-details.png"
                   }
                   alt="images"
@@ -55,7 +119,7 @@ const Detail = async ({
                 />
               </div>
             </div>
-            <ClientComponent voopon_detail={voopon_detail} />
+            <ClientComponent vooponDetail={vooponDetail} qrCode={qrCode} />
           </div>
         </div>
       </section>
@@ -134,9 +198,9 @@ const Detail = async ({
         </div>
       </section>
 
-      {related_event && <Events related_event={related_event} />}
+      {relatedEvent?.id && <Events related_event={relatedEvent} />}
     </>
   );
 };
 
-export default Detail;
+export default VooponDetail;

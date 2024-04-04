@@ -1,34 +1,21 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import Voopons from "./components/voopons";
 import Collaborator from "@/app/voopons/[detail]/components/Modal/collaborator";
 import { DateTime } from "luxon";
 import Link from "next/link";
 import { BASE_URL } from "@/constant/constant";
 import Quantity from "@/components/Quantity";
 import Carousel from "@/components/Carousel";
-import { useAuth } from "@/app/UserProvider";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { toast } from "react-toastify";
-import { postData, postFetchDataWithAuth } from "@/fetchData/fetchApi";
-import CheckPayment from "@/components/Modal/CheckPayment";
+
+import ShowQrCode from "@/components/Modal/ShowQrCode";
 import { Rating } from "@mui/material";
 
-const ClientComponent = ({ eventDetail, relatedVoopon = [] }) => {
+const ClientComponent = ({ eventDetail, qrCode }) => {
   const [open, setOpen] = useState(false);
-  const [openCard, setOpenCard] = useState(false);
-  const [eventPrice, setEventPrice] = useState<number>(
-    eventDetail.hasOwnProperty("events_price") &&
-      typeof eventDetail?.events_price === "number"
-      ? Number(eventDetail?.events_price)
-      : 0
-  );
-  const [quantity, setQuantity] = useState(1);
-  const { isAuthenticated, userDetails } = useAuth();
-  const router = useRouter();
+  const [openQrCode, setOpenQrCode] = useState(false);
   let pathName = usePathname();
-  const [reload, setReload] = useState<boolean>(false);
 
   const searchParams = useSearchParams();
   const tempPathName =
@@ -56,94 +43,11 @@ const ClientComponent = ({ eventDetail, relatedVoopon = [] }) => {
   const whatsappShareLink = `https://wa.me/?text=${encodeURIComponent(
     `${pageTitle} - ${pageUrl}`
   )}`;
-  const handleQuantity = (qty) => {
-    setQuantity(qty);
-    setEventPrice(
-      qty * eventDetail.hasOwnProperty("events_price")
-        ? Number(eventDetail?.events_price)
-        : 0
-    );
+
+  const handleQrCode = () => {
+    setOpenQrCode(true);
   };
-  console.log("eventDetail", eventDetail);
-  const handleBookNow = () => {
-    if (!isAuthenticated) {
-      router.push(`/login?lastPath=${tempPathName}`);
-    } else {
-      setOpenCard(true);
-    }
-  };
-  // const generateQRCode = async () => {
-  //   try {
-  //     const requestData = {
-  //       user_id: userDetails?.user_id,
-  //       promoter_event_id: eventDetail?.id,
-  //       // business_event_id: eventDetail,
-  //       price: eventPrice,
-  //       event_id: eventDetail?.id,
-  //       event_quantity: quantity,
-  //       promoter_id: eventDetail?.promoter_id,
-  //     };
-  //     const response = await postData({
-  //       data: requestData,
-  //       endpoint: "qrcode_generate_Save_test",
-  //     });
-  //     if (response.id) {
-  //       toast.success(`QR code generated`);
-  //     }
-  //   } catch (error) {
-  //     toast.error(`${error}`);
-  //   }
-  // };
-  const callBack = async (card: any) => {
-    let requestData: any;
-    if (card?.token) {
-      requestData = {
-        user_id: `${userDetails?.user_id}`,
-        email: userDetails?.email,
-        price: eventPrice,
-        promoter_event_id: `${eventDetail?.id}`,
-        event_quantity: `${quantity}`,
-        promoter_id: eventDetail?.promoter_id,
-        token: card?.token,
-        event_id: eventDetail?.id,
-        // event_quantity: null,
-      };
-    } else if (card?.customer_id) {
-      requestData = {
-        user_id: `${userDetails?.user_id}`,
-        email: userDetails?.email,
-        price: eventPrice,
-        promoter_event_id: `${eventDetail?.id}`,
-        event_quantity: `${quantity}`,
-        promoter_id: eventDetail?.promoter_id,
-        event_id: eventDetail?.id,
-        customer_id: card?.customer_id,
-        // event_id: null,
-        // event_quantity: null,
-      };
-    }
-    try {
-      const response = await postFetchDataWithAuth({
-        data: requestData,
-        endpoint: "user_buy_now",
-        authToken: userDetails.token,
-      });
-      if (response.success) {
-        setReload(!reload);
-        toast.success(`Payment successful`);
-      } else {
-        throw response;
-      }
-    } catch (error: any) {
-      const errorMessage =
-        typeof error === "string"
-          ? `${error}`
-          : error?.message
-          ? error?.message
-          : `${error}`;
-      toast.error(errorMessage);
-    }
-  };
+
   return (
     <>
       <section className="details-page">
@@ -161,47 +65,12 @@ const ClientComponent = ({ eventDetail, relatedVoopon = [] }) => {
                   alt=""
                   id="product-main-image"
                 />
-                {/* <div
-                  id="pro-slider"
-                  className="product-image-slider owl-carousel"
-                >
-                  <img
-                    src="/images/banners/slide1.png"
-                    alt=""
-                    className="image-list image-list-bdr w-100"
-                  />
-                  <img
-                    src="/images/banners/slide2.png"
-                    alt=""
-                    className="image-list w-100"
-                  />
-                  <img
-                    src="/images/banners/slide3.png"
-                    alt=""
-                    className="image-list w-100"
-                  />
-                  <img
-                    src="/images/banners/slide1.png"
-                    alt=""
-                    className="image-list w-100"
-                  />
-                  <img
-                    src="/images/banners/slide2.png"
-                    alt=""
-                    className="image-list w-100"
-                  />
-                  <img
-                    src="/images/banners/slide3.png"
-                    alt=""
-                    className="image-list w-100"
-                  />
-                </div> */}
 
                 <Carousel
-                  RenderComponent={() => null}
+                  itemsList={eventDetail?.eventsimage}
+                  RenderComponent={() => <img />}
                   itemsPerPage={4}
                   isImage={true}
-                  itemsList={eventDetail?.eventsimage}
                 />
               </div>
             </div>
@@ -282,18 +151,20 @@ const ClientComponent = ({ eventDetail, relatedVoopon = [] }) => {
                   setOpen={setOpen}
                   data={eventDetail?.collaborator_data}
                 />
-                <CheckPayment
-                  open={openCard}
-                  setOpen={setOpenCard}
-                  callBack={callBack}
-                  reloadList={reload}
+                <ShowQrCode
+                  open={openQrCode}
+                  setOpen={setOpenQrCode}
+                  codeData={qrCode}
                 />
 
                 <div className="row mt-2 align-items-center">
                   <div className="col-lg-7 col-md-6">
                     <div className="quantity">
-                      <h4> Quantity:</h4>
-                      <Quantity limit={1000} updateQuantity={handleQuantity} />
+                      <h4>
+                        {" "}
+                        Quantity:
+                        <span> {eventDetail?.event_quantity}</span>
+                      </h4>
                     </div>
                   </div>
                   <div className="col-lg-5 col-md-6">
@@ -303,7 +174,11 @@ const ClientComponent = ({ eventDetail, relatedVoopon = [] }) => {
                         Price:{" "}
                         <span>
                           {" "}
-                          $ {eventPrice === 0 ? "Free" : eventPrice}{" "}
+                          ${" "}
+                          {eventDetail.hasOwnProperty("events_price") &&
+                          Number(eventDetail?.events_price) === 0
+                            ? "Free"
+                            : Number(eventDetail?.events_price)}{" "}
                         </span>
                       </h4>
                     </div>
@@ -332,11 +207,11 @@ const ClientComponent = ({ eventDetail, relatedVoopon = [] }) => {
                 <div className="row mt-2 align-items-center">
                   <div className="col-lg-8 col-md-6">
                     <a
-                      onClick={handleBookNow}
+                      onClick={handleQrCode}
                       className="btn btn-learnmore"
                       role="button"
                     >
-                      Book Now
+                      Event QR
                     </a>
                   </div>
                   <div className="col-lg-4 col-md-6">
@@ -460,40 +335,10 @@ const ClientComponent = ({ eventDetail, relatedVoopon = [] }) => {
               <p className="paragraph-wrap">{eventDetail?.events_about}</p>
               <div className="heading-sec">Event Highlights</div>
               <p className="paragraph-wrap">{eventDetail?.events_highlights}</p>
-              {/* <ul>
-                <li>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry&apos;s
-                  standard dummy text.
-                </li>
-                <li>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry&apos;s
-                  standard dummy text.Lorem Ipsum is{" "}
-                </li>
-                <li>
-                  simply dummy text of the printing and typesetting industry.
-                  Lorem Ipsum has been the industry&apos;s standard dummy text.
-                </li>
-                <li>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry&apos;s
-                  standard dummy text.
-                </li>
-                <li>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry&apos;s
-                  standard dummy text.
-                </li>
-              </ul> */}
             </div>
           </div>
         </div>
       </section>
-
-      {Array.isArray(relatedVoopon) && relatedVoopon.length > 0 && (
-        <Voopons listData={relatedVoopon} />
-      )}
     </>
   );
 };

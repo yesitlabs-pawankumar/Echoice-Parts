@@ -17,7 +17,7 @@ export const countCategory = (
     let count = 0;
 
     for (let itemEl of ItemList) {
-      if (itemEl.category_id === el.category_id.toString()) {
+      if (Number(itemEl.category_id) === Number(el.category_id)) {
         // Convert el.category_id to string for comparison
         count += 1;
       }
@@ -47,7 +47,7 @@ export const filterEvent = (
 
   for (let elEvent of eventList) {
     for (let elCategory of categoryList) {
-      if (elCategory.category_id.toString() === elEvent.category_id) {
+      if (Number(elCategory.category_id) === Number(elEvent.category_id)) {
         returnList.push(elEvent);
       }
     }
@@ -155,6 +155,26 @@ export function filterObjectsByDateRange(
 
   return objectsList.filter((obj) => {
     const objDate = new Date(obj.events_date);
+    return objDate >= startDate && objDate <= endDate;
+  });
+}
+
+export function filterObjectsByDateRangeMyEvents(
+  date1: string,
+  date2: string,
+  objectsList: MyObject[],
+  keyText: string
+): MyObject[] {
+  const startDate = new Date(date1);
+  const endDate = new Date(date2);
+
+  // Ensure that the dates are valid
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    throw new Error("Invalid date format");
+  }
+
+  return objectsList.filter((obj: any) => {
+    const objDate = new Date(obj?.[keyText]?.events_date);
     return objDate >= startDate && objDate <= endDate;
   });
 }

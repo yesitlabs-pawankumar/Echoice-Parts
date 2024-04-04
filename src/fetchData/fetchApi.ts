@@ -115,7 +115,6 @@ export const postFetchDataWithAuth = async ({
       throw result.error;
     }
   } catch (error: any) {
-    const errorMessage = error?.message || `$error`;
-    toast.error(errorMessage);
+    return error;
   }
 };

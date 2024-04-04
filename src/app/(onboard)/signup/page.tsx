@@ -31,6 +31,7 @@ const SignUp = () => {
         name: data.name,
         email: data.emailOrPhone,
         password: data.password,
+        referralcode: data.referralcode,
       };
       const response = await postData({
         data: formdata,
@@ -151,6 +152,19 @@ const SignUp = () => {
                         {errors.password && (
                           <span className="text-danger">
                             {errors.password.message?.toString()}
+                          </span>
+                        )}
+                      </div>
+                      <div className="name-icon">
+                        <input
+                          {...register("referralcode", {})}
+                          type="text"
+                          className="form-control"
+                          placeholder="Referral code"
+                        />
+                        {errors.referralcode && (
+                          <span className="text-danger">
+                            {errors.referralcode.message?.toString()}
                           </span>
                         )}
                       </div>

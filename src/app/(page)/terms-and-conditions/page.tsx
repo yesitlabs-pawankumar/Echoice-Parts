@@ -24,7 +24,7 @@ const Terms = async () => {
       <div
         className="inner-banner"
         style={{
-          backgroundImage: "url(./images/about-bnr.png)",
+          backgroundImage: "url(/images/about-bnr.png)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
         }}

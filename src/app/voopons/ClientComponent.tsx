@@ -19,14 +19,13 @@ import {
   filterByVoopanDistance,
   filterVoopansByDateRange,
 } from "@/relatedFunction/voopanFunction";
-import Toolbar from "react-multi-date-picker/plugins/toolbar";
 import CustomDatePicker from "@/components/CustomDatePicker";
 
-interface Coordinates {
+export interface Coordinates {
   latitude: number;
   longitude: number;
 }
-interface FilterApplyType {
+export interface FilterApplyType {
   isCategoryApply: boolean;
   isSearchApply: boolean;
   isDateRangeApply: boolean;
@@ -34,11 +33,11 @@ interface FilterApplyType {
   isMilesAppy: boolean;
   isPaginationApply: boolean;
 }
-interface SelectCategoryType {
+export interface SelectCategoryType {
   category_id: string;
 }
 
-interface ClientComponentProps {
+export interface ClientComponentProps {
   categoryList: any;
   voopanList: any;
 }

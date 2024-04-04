@@ -1,6 +1,7 @@
+import CustomCarousel from "@/components/Carousel";
 import Card from "./Card";
 
-const Voopons = () => {
+const Voopons = ({ listData }) => {
   return (
     <>
       <section className="related-voopons mt-3">
@@ -12,9 +13,19 @@ const Voopons = () => {
               </div>
             </div>
             <div className="col-lg-12">
-              <div id="voopons-slider" className="owl-carousel">
-                <Card />
-              </div>
+              <CustomCarousel
+                itemsPerPage={4}
+                itemsList={listData}
+                RenderComponent={Card}
+              />
+
+              {/* <div id="voopons-slider" className="owl-carousel">
+                {Array.isArray(listData) &&
+                  listData?.length > 0 &&
+                  listData.map((event) => (
+                    <Card key={event?.id} cardData={event} />
+                  ))}
+              </div> */}
             </div>
           </div>
         </div>
